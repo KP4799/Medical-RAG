@@ -1,0 +1,18 @@
+# Virtual Environment
+venv/
+
+# Environment Variables
+.env
+
+# Python
+__pycache__/
+*.pyc
+
+# Mac
+.DS_Store
+
+# Streamlit secrets
+.streamlit/
+
+# Logs
+*.log

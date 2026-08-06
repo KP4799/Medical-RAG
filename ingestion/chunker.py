@@ -1,14 +1,21 @@
-import os
 import json
 import nltk
 
-nltk.download("punkt")
-nltk.download("punkt_tab")
+try:
+    nltk.data.find("tokenizers/punkt")
+except:
+    nltk.download("punkt")
+
+try:
+    nltk.data.find("tokenizers/punkt_tab")
+except:
+    nltk.data.find("tokenizers/punkt_tab")
 
 INPUT_FILE = "data/processed/cleaned_documents.json"
 OUTPUT_FILE = "data/processed/chunks.json"
 
 CHUNK_SIZE = 800
+MIN_CHUNK_LENGTH = 100
 OVERLAP_SENTENCES = 2
 
 def chunk_text(text):
@@ -35,6 +42,27 @@ def chunk_text(text):
 
     return chunks
 
+def create_chunks_for_document(document, start_chunk_id=0):
+    chunked_docs = []
+    chunk_id = start_chunk_id
+
+    chunks = chunk_text(document["text"])
+
+    for chunk in chunks:
+        if len(chunk.strip()) < MIN_CHUNK_LENGTH:
+            continue
+
+        chunked_docs.append({
+            "chunk_id": chunk_id,
+            "source": document["source"],
+            "topic": document["topic"],
+            "page": document["page"],
+            "text": chunk
+        })
+        chunk_id += 1
+
+    return chunked_docs
+
 def create_chunks():
     with open(INPUT_FILE, "r", encoding="utf-8") as f:
         documents = json.load(f)
@@ -42,22 +70,11 @@ def create_chunks():
     chunked_docs = []
     chunk_id = 0
 
-    for doc in documents:
-        chunks = chunk_text(doc["text"])
+    for document in documents:
+        new_chunks = create_chunks_for_document(document,chunk_id)
+        chunked_docs.extend(new_chunks)
+        chunk_id += len(new_chunks)
 
-        for chunk in chunks:
-            if len(chunk.strip()) < 100:
-                continue
-
-            chunked_docs.append({
-                "chunk_id": chunk_id,
-                "source": doc["source"],
-                "topic": doc["topic"],
-                "page": doc["page"],
-                "text": chunk
-            })
-            chunk_id += 1
-    
     return chunked_docs
 
 def save_chunks(chunks):

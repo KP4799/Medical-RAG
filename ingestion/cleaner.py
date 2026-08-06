@@ -16,18 +16,17 @@ def clean_text(text):
     
     return text.strip()
 
+def clean_document(document):
+    return {
+        **document,
+        "text": clean_text(document["text"])
+    }
+
 def clean_documents():
     with open(INPUT_FILE, "r", encoding="utf-8") as f:
         documents = json.load(f)
 
-    cleaned_documents = []
-    
-    for doc in documents:
-        cleaned_doc = {
-            **doc,
-            "text": clean_text(doc["text"])
-        }
-        cleaned_documents.append(cleaned_doc)
+    cleaned_documents = [clean_document(document) for document in documents]
     return cleaned_documents
 
 def save_documents(documents):

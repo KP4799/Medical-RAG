@@ -9,9 +9,14 @@ CHUNK_FILE = "data/processed/chunks.json"
 TOP_K = 15
 
 class Retriever:
+    _model = None
+
     def __init__(self):
-        print("Loading Embedding Model")
-        self.model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+        if Retriever._model is None:
+            print("Loading Embedding Model")
+            Retriever._model = SentenceTransformer("sentence-transformers/all-MiniLM-L6-v2")
+
+        self.model = Retriever._model
         
         print("Loading FAISS Index")
         self.index = faiss.read_index(INDEX_FILE)

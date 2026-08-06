@@ -1,6 +1,11 @@
-pymupdf
-pandas
 streamlit
 python-dotenv
 google-genai
 sentence-transformers
+transformers
+torch
+faiss-cpu
+numpy
+nltk
+pymupdf
+pandas

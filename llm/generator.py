@@ -1,35 +1,24 @@
-import os
-from dotenv import load_dotenv
-from google import genai
-
-load_dotenv()
-client = genai.Client(api_key=os.getenv("GOOGLE_API_KEY"))
+from llm.client import client, MODEL
+from llm.prompts import ANSWER_PROMPT
+import time
 
 class Generator:
     def __init__(self):
-        self.model = "gemini-2.5-flash"
+        self.model = MODEL
 
-    def generate(self, question, context):
-        prompt = f"""
-            You are a medical information assistant.
+    def generate(self, question, retrieved_context):
+        prompt = ANSWER_PROMPT.format(context=retrieved_context,question=question)
 
-            IMPORTANT:
-            - Answer ONLY using the provided context.
-            - If the answer is not in the context, say:
-            "I could not find sufficient information in the provided documents."
-            - Do not make up information.
-            - Do not provide medical diagnosis.
-            - Keep answers clear and concise.
-
-            CONTEXT:
-            {context}
-
-            QUESTION:
-            {question}
-            """
-        try:
-            response = client.models.generate_content(model=self.model,contents=prompt)
-        except Exception as e:
-            return ("LLM unavailable. Showing retrieved medical evidences", context)
-        return response.text
+        for attempt in range(2):
+            try:
+                response = client.models.generate_content(model=self.model,contents=prompt)
+                return response.text.strip()
+            
+            except Exception as e:
+                print(f"Attempt {attempt + 1} failed: ",e)
+                if attempt == 0:
+                    time.sleep(2)
+                    continue
+                return None
+                
     

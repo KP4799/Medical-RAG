@@ -16,6 +16,30 @@ def extract_page_with_ocr(page):
     text = pytesseract.image_to_string(image)
     return text
 
+def extract_pdf(pdf_path, topic):
+    documents = []
+
+    with fitz.open(pdf_path) as pdf:
+        for page_num in range(len(pdf)):
+            page = pdf[page_num]
+            text = page.get_text()
+            method = "TEXT"
+
+            if not text or len(text.strip()) < 30:
+                method = "OCR"
+                text = extract_page_with_ocr(page)
+
+            documents.append({
+                "source": os.path.basename(pdf_path),
+                "topic": topic,
+                "page": page_num + 1,
+                "char_count": len(text),
+                "method": method,
+                "text": text.strip()
+            })
+
+    return documents
+
 def extract_documents():
     documents = []
 
@@ -36,33 +60,8 @@ def extract_documents():
 
             pdf_path = os.path.join(topic_path, filename)
             print(f"Loading: {filename}")
-
-            try:
-                pdf = fitz.open(pdf_path)
-                for page_num in range(len(pdf)):
-                    page = pdf[page_num]
-                    text = page.get_text()
-
-                    method = "TEXT"
-                    if len(text.strip()) < 50:
-                        print(f"OCR Fallback: Page {page_num + 1}")
-                        method = "OCR"
-                        text = extract_page_with_ocr(page)
-
-                    document = {
-                        "source": filename,
-                        "topic": topic,
-                        "page": page_num + 1,
-                        "char_count": len(text),
-                        "method": method,
-                        "text": text.strip()
-                    }
-
-                    documents.append(document)
-                pdf.close()
-
-            except Exception as e:
-                print(f"Error processing {filename}: {e}")
+            docs = extract_pdf(pdf_path,topic)
+            documents.extend(docs)
             
     return documents
 

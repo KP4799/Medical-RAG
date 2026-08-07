@@ -3,11 +3,12 @@ import traceback
 from pathlib import Path
 import streamlit as st
 import json
-from services.rag_pipeline import RAGPipeline
-from services.upload_service import UploadService
 
 ROOT_DIR = Path(__file__).resolve().parent.parent
 sys.path.append(str(ROOT_DIR))
+
+from services.rag_pipeline import RAGPipeline
+from services.upload_service import UploadService
 
 # -------------------------
 # Page Config

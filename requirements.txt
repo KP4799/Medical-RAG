@@ -10,3 +10,4 @@ nltk
 pymupdf
 pandas
 pytesseract
+torchvision

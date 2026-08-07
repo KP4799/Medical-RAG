@@ -9,7 +9,7 @@ except:
 try:
     nltk.data.find("tokenizers/punkt_tab")
 except:
-    nltk.data.download("tokenizers/punkt_tab")
+    nltk.download("tokenizers/punkt_tab")
 
 INPUT_FILE = "data/processed/cleaned_documents.json"
 OUTPUT_FILE = "data/processed/chunks.json"

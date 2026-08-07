@@ -1,5 +1,5 @@
 # 🩺 Medical RAG AI Assistant
-
+p
 An advanced **Retrieval-Augmented Generation (RAG)** application specialized in medical literature. This system enables intelligent, conversational question-answering over a local medical knowledge base (currently containing literature on **Diabetes, Hypertension, and Obesity**). It is built with a Streamlit interface, local vector search via FAISS, sentence-transformer embeddings, and Gemini 2.5 Flash for state-of-the-art response generation and context-aware query rewriting.
 
 ---

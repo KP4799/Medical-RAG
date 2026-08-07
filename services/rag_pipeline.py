@@ -20,19 +20,11 @@ class RAGPipeline:
 
         search_question = rewritten_question or question
 
-
-
-
         print("\nOriginal Question:", question)
         print("Rewritten Question:", rewritten_question)
         print("Search Question:", search_question)
-
-
-
-
+        
         retrieved_chunks = self.retriever.search(search_question,top_k=5)
-
-
 
         print("\nRetrieved Chunks:")
         for i, chunk in enumerate(retrieved_chunks):
@@ -40,10 +32,6 @@ class RAGPipeline:
             print("Source:", chunk["source"])
             print("Topic:", chunk["topic"])
             print(chunk["text"][:250])
-
-
-
-
 
         retrieved_context = "\n\n".join(chunk["text"]for chunk in retrieved_chunks)
         answer = self.generator.generate(search_question,retrieved_context)
